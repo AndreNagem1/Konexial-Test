@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">KonexialTest</string>
+    <string name="time">Time</string>
+    <string name="status">Status</string>
+    <string name="edit">Edit</string>
+
+</resources>
