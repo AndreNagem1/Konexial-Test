@@ -1,8 +1,13 @@
 package com.example.konexialtest
 
+import android.content.Context
 import android.os.Bundle
+import android.util.AttributeSet
+import android.view.View
+import android.view.Window
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.constraintlayout.widget.ConstraintLayout
 import com.example.konexialtest.databinding.ActivityMainBinding
 
 class MainActivity : AppCompatActivity() {

@@ -1,9 +1,11 @@
 package com.example.konexialtest
 
+import android.app.Dialog
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.Window
 import android.widget.AdapterView
 import androidx.fragment.app.DialogFragment
 import com.example.konexialtest.databinding.AddStatusDialogBinding
@@ -24,6 +26,17 @@ class AddStatusDialog(
     ): View {
         binding = AddStatusDialogBinding.inflate(inflater, container, false)
         return binding.root
+    }
+
+    override fun onStart() {
+        super.onStart()
+        val dialog = dialog
+        dialog?.let {
+            it.window?.setLayout(
+                ViewGroup.LayoutParams.WRAP_CONTENT,
+                ViewGroup.LayoutParams.WRAP_CONTENT
+            );
+        }
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
