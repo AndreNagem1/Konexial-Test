@@ -9,10 +9,11 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
     private var adapter: StatusListAdapter? = null
-    private val dialog = AddStatusDialog { newStatus, startTime ->
+    private val dialog = AddStatusDialog { newStatus, startTime, endTime ->
         addStatus(
             newStatus,
             startTime,
+            endTime
         )
     }
 
@@ -25,9 +26,10 @@ class MainActivity : AppCompatActivity() {
     private val mapStatus = mapOf(
         0 to Status.DRIVING,
         1 to Status.ON_DUTY,
-        2 to Status.OFF_DUTY,
-        3 to Status.SLEEPER
+        2 to Status.OFF_DUTY
     )
+
+    private val listOfStatus = arrayListOf(Status.DRIVING, Status.ON_DUTY, Status.OFF_DUTY)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -54,31 +56,42 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun addStatus(newStatusIndex: Int, startTimeIndex: Int) {
+    private fun addStatus(newStatusIndex: Int, startTimeIndex: Int, endTimeIndex: Int) {
         val status = mapStatus[newStatusIndex]
 
         status?.let { newStatus ->
             edit(
+                statusList,
                 newStatus,
                 Date(startTimeIndex),
+                Date(endTimeIndex),
             )
         }
     }
 
     private fun edit(
+        day: List<StatusChange>,
         newStatus: Status,
-        startTime: Date
+        startTime: Date,
+        endTime: Date
     ): List<StatusChange> {
-        val newStatusChange = StatusChange(newStatus, startTime)
+        val newStatusChangeStart = StatusChange(newStatus, startTime)
         val newStatusList: ArrayList<StatusChange> = arrayListOf()
+
         newStatusList.addAll(statusList)
-        newStatusList.add(newStatusChange)
+        newStatusList.add(newStatusChangeStart)
         newStatusList.sortBy { hour -> hour.time.hour }
 
-        val isListValid = checkIfListIsValid(newStatusList)
-        val isStatusValid = checkIfNewStatusTimeIsAlreadyTaken(newStatusChange)
+        val isStatusValid =
+            checkIfNewStatusTimeIsAlreadyTaken(startTime.hour, endTime.hour)
 
-        if (isListValid && isStatusValid) {
+        val listWithEndTimeStatus =
+            addEndTimeStatusChange(newStatusList, newStatusChangeStart, endTime)
+
+        val isListValid = checkIfListIsValid(listWithEndTimeStatus)
+
+
+        if (isStatusValid && isListValid) {
             statusList = arrayListOf()
             statusList.addAll(newStatusList)
         }
@@ -87,10 +100,43 @@ class MainActivity : AppCompatActivity() {
         return statusList
     }
 
-    private fun checkIfNewStatusTimeIsAlreadyTaken(newStatus: StatusChange): Boolean {
+    private fun addEndTimeStatusChange(
+        newStatusList: ArrayList<StatusChange>,
+        startStatusChange: StatusChange,
+        endTime: Date
+    ): List<StatusChange> {
+        val indexOfStartStatus = newStatusList.indexOf(startStatusChange)
+        val nextStatusChange = newStatusList[indexOfStartStatus + 1]
+
+        if (nextStatusChange.time.hour == endTime.hour) {
+            return newStatusList
+        }
+
+        val availableListOfStatus = arrayListOf<Status>()
+        availableListOfStatus.addAll(listOfStatus)
+
+        availableListOfStatus.remove(startStatusChange.status)
+        availableListOfStatus.remove(nextStatusChange.status)
+
+        val remainingAvailableStatus = availableListOfStatus[0]
+        val endStatusChange = StatusChange(remainingAvailableStatus, endTime)
+
+        newStatusList.add(endStatusChange)
+        newStatusList.sortBy { hour -> hour.time.hour }
+        return newStatusList
+    }
+
+    private fun checkIfNewStatusTimeIsAlreadyTaken(
+        startHour: Int,
+        endHour: Int
+    ): Boolean {
         statusList.forEach { StatusChange ->
-            if (StatusChange.time.hour == newStatus.time.hour) {
+            if (StatusChange.time.hour == startHour) {
                 Toast.makeText(this, "Status hour is already taken", Toast.LENGTH_SHORT).show()
+                return false
+            }
+            if (StatusChange.time.hour > startHour && StatusChange.time.hour < endHour) {
+                Toast.makeText(this, "Invalid períod of time", Toast.LENGTH_SHORT).show()
                 return false
             }
         }
@@ -102,16 +148,6 @@ class MainActivity : AppCompatActivity() {
         var index = START_INDEX
         while (index < newStatusList.size) {
             val element = newStatusList[index]
-
-            val previousIndex = index - 1
-
-            if (previousIndex > -1) {
-                val previousElement = newStatusList[previousIndex]
-                if (element.status == previousElement.status) {
-                    Toast.makeText(this, "Invalid new Status", Toast.LENGTH_SHORT).show()
-                    result = false
-                }
-            }
             val nextIndex = index + 1
 
             if (nextIndex < newStatusList.size) {

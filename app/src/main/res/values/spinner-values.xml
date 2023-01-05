@@ -5,7 +5,6 @@
         <item>DRIVING</item>
         <item>ON DUTY</item>
         <item>OFF DUTY</item>
-        <item>SLEEPER</item>
     </string-array>
 
     <string-array name="time_array">

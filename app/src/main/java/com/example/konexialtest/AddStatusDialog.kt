@@ -9,12 +9,13 @@ import androidx.fragment.app.DialogFragment
 import com.example.konexialtest.databinding.AddStatusDialogBinding
 
 class AddStatusDialog(
-    private val addStatus: (newStatus: Int, startTime: Int) -> Unit
+    private val addStatus: (newStatus: Int, startTime: Int, endTime: Int) -> Unit
 ) : DialogFragment() {
 
     private lateinit var binding: AddStatusDialogBinding
     private var statusSelected = START_INDEX
     private var startTime = START_INDEX
+    private var endTime = START_INDEX
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -28,7 +29,7 @@ class AddStatusDialog(
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding.addStatusBtn.setOnClickListener {
-            addStatus.invoke(statusSelected, startTime)
+            addStatus.invoke(statusSelected, startTime, endTime)
             this.dismiss()
         }
         binding.statusField.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
@@ -56,6 +57,22 @@ class AddStatusDialog(
                     id: Long
                 ) {
                     startTime = position
+                }
+
+                override fun onNothingSelected(p0: AdapterView<*>?) {
+
+                }
+            }
+
+        binding.endTimeField.onItemSelectedListener =
+            object : AdapterView.OnItemSelectedListener {
+                override fun onItemSelected(
+                    adapterView: AdapterView<*>?,
+                    view: View?,
+                    position: Int,
+                    id: Long
+                ) {
+                    endTime = position
                 }
 
                 override fun onNothingSelected(p0: AdapterView<*>?) {

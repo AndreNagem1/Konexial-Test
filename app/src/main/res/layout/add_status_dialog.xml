@@ -27,6 +27,17 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/statusField" />
 
+    <Spinner
+        android:id="@+id/endTimeField"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:layout_marginTop="20dp"
+        android:entries="@array/time_array"
+        android:hint="Start time"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/startTimeField" />
+
     <Button
         android:id="@+id/addStatusBtn"
         android:layout_width="wrap_content"
@@ -35,6 +46,6 @@
         android:text="Add Status"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/startTimeField" />
+        app:layout_constraintTop_toBottomOf="@id/endTimeField" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
