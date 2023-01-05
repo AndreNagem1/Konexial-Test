@@ -31,7 +31,8 @@ class MainActivity : AppCompatActivity() {
     private val mapStatus = mapOf(
         0 to Status.DRIVING,
         1 to Status.ON_DUTY,
-        2 to Status.OFF_DUTY
+        2 to Status.OFF_DUTY,
+        3 to Status.SLEEPER
     )
 
     private val listOfStatus = arrayListOf(Status.DRIVING, Status.ON_DUTY, Status.OFF_DUTY)
