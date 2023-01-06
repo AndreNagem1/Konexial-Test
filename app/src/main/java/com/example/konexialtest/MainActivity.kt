@@ -65,6 +65,11 @@ class MainActivity : AppCompatActivity() {
     private fun addStatus(newStatusIndex: Int, startTimeIndex: Int, endTimeIndex: Int) {
         val status = mapStatus[newStatusIndex]
 
+        if(endTimeIndex < startTimeIndex){
+            Toast.makeText(this, "End time is less than start time", Toast.LENGTH_SHORT).show()
+            return
+        }
+
         status?.let { newStatus ->
             edit(
                 statusList,
